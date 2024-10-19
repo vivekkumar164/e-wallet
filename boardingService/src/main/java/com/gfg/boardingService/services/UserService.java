@@ -64,4 +64,15 @@ public class UserService {
 
 
     }
+
+    public String validateUser(String mobile){
+        User user = userRepository.findByMobileNo(mobile);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(CommonConstants.USER_MOBILE,user.getMobileNo());
+        jsonObject.put(CommonConstants.USER_EMAIL,user.getEmail());
+        jsonObject.put(CommonConstants.USER_PASSWORD,user.getPassword());
+
+        return jsonObject.toString();
+    }
 }

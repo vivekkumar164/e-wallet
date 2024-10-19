@@ -1,10 +1,12 @@
-package com.gfg.boardingService.config;
+package com.gfg.txnService.config;
 
+import com.gfg.txnService.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -14,15 +16,21 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+
         httpSecurity.csrf(csrf->csrf.disable());
         httpSecurity.httpBasic(Customizer.withDefaults());
-        httpSecurity.authorizeHttpRequests(request-> request.requestMatchers("/user-service/create/user").permitAll());
-        httpSecurity.authorizeHttpRequests(request->request.requestMatchers("/user-service/validate/user").permitAll());
+        httpSecurity.authorizeHttpRequests(request->request.anyRequest().authenticated());
+
         return httpSecurity.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(){
+        return new CustomUserDetailsService();
     }
 }
